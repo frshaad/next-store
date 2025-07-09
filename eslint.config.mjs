@@ -85,6 +85,7 @@ export default tseslint.config(
 
       // Unicorn
       'unicorn/prevent-abbreviations': 'off',
+      'unicorn/prefer-spread': 'off',
     },
   },
 
