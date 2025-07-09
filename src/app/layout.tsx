@@ -1,7 +1,8 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { ThemeProvider } from '@/components/theme-provider'
+import ThemeProvider from '@/components/theme-provider'
+import StoreProvider from '@/lib/redux/provider'
 
 export const metadata: Metadata = {
   description: 'A basic starter for Next.js',
@@ -27,7 +28,7 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          {children}
+          <StoreProvider>{children}</StoreProvider>
         </ThemeProvider>
       </body>
     </html>
