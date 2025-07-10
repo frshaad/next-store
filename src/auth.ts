@@ -5,8 +5,8 @@ import Google from 'next-auth/providers/google'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import bcrypt from 'bcryptjs'
 import db from '@/db'
+import { getUserByEmail } from '@/db/query'
 import { signInSchema } from '@/lib/schemas'
-import { getUserByEmail } from './db/query'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -15,37 +15,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Github,
     Credentials({
       credentials: {
-        email: {},
-        password: {},
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
 
-      authorize: async credentials => {
-        const { email, password } = await signInSchema.parseAsync(credentials)
+      authorize: async rawCredentials => {
+        try {
+          const { email, password } =
+            await signInSchema.parseAsync(rawCredentials)
 
-        const user = await getUserByEmail(email)
+          const user = await getUserByEmail(email)
 
-        if (!user) {
-          throw new Error('Invalid credentials.')
+          if (!user?.hashedPassword) {
+            throw new Error('Invalid email or password.')
+          }
+
+          const isValid = await bcrypt.compare(password, user.hashedPassword)
+
+          if (!isValid) {
+            throw new Error('Invalid email or password.')
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          }
+        } catch (error) {
+          console.error('Credentials auth error:', error)
+          throw new Error('Login failed. Please check your credentials.')
         }
-
-        if (!user.hashedPassword) {
-          throw new Error('You should sign in with OAuth.')
-        }
-
-        const passwordMatch = await bcrypt.compare(
-          password,
-          user.hashedPassword,
-        )
-
-        if (!passwordMatch) {
-          throw new Error('Password is wrong')
-        }
-
-        return user
       },
     }),
   ],
   pages: {
     signIn: '/signin',
+    error: '/signin', // Optional: redirect to custom error page
   },
 })
