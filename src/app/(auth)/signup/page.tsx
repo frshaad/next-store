@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import LoginForm from '@/components/auth/login-form'
 import { SignInButton } from '@/components/auth/signin-button'
+import SignupForm from '@/components/auth/signup-form'
 
 export default async function SignInPage({
   searchParams,
@@ -22,12 +22,12 @@ export default async function SignInPage({
         </span>
       </div>
 
-      <LoginForm />
+      <SignupForm />
 
       <div className="text-center text-sm">
-        Don&apos;t have an account?{' '}
-        <Link className="underline underline-offset-4" href="/signup">
-          Sign up
+        Already have an account?{' '}
+        <Link className="underline underline-offset-4" href="/signin">
+          Sign in
         </Link>
       </div>
     </>
