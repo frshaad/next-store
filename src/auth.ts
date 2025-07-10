@@ -6,6 +6,7 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import bcrypt from 'bcryptjs'
 import db from '@/db'
 import { signInSchema } from '@/lib/schemas'
+import { getUserByEmail } from './db/query'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -19,33 +20,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
 
       authorize: async credentials => {
-        let user:
-          | {
-              email: string
-              password: string
-            }
-          | undefined
-
         const { email, password } = await signInSchema.parseAsync(credentials)
 
-        // logic to verify if the user exists
-        // user = await getUserFromDb(email) (will replace it with drizzle)
+        const user = await getUserByEmail(email)
 
         if (!user) {
-          // No user found, so this is their first attempt to login
-          // Optionally, this is also the place you could do a user registration
           throw new Error('Invalid credentials.')
         }
 
-        // if user with 'email' exists, then compare user.password with provided password
-        // const hashedPassword = saltAndHashPassword(password)
-        const passwordMatch = await bcrypt.compare(password, user.password)
+        if (!user.hashedPassword) {
+          throw new Error('You should sign in with OAuth.')
+        }
+
+        const passwordMatch = await bcrypt.compare(
+          password,
+          user.hashedPassword,
+        )
 
         if (!passwordMatch) {
           throw new Error('Password is wrong')
         }
 
-        // return user object with their profile data
         return user
       },
     }),

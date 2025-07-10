@@ -1,4 +1,5 @@
 import type { AdapterAccountType } from 'next-auth/adapters'
+import type { InferSelectModel } from 'drizzle-orm'
 import {
   boolean,
   integer,
@@ -14,6 +15,7 @@ export const users = pgTable('user', {
     .$defaultFn(() => crypto.randomUUID()),
   name: text('name'),
   email: text('email').unique(),
+  hashedPassword: text('hashedPassword'),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
 })
