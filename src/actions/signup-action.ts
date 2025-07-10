@@ -6,9 +6,10 @@ import { signUpSchema } from '@/lib/schemas'
 
 export async function signup(formData: FormData) {
   const parsedInputs = signUpSchema.safeParse({
-    email: formData.get('email'),
     name: formData.get('name'),
+    email: formData.get('email'),
     password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
   })
 
   if (!parsedInputs.success) {
