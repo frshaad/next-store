@@ -8,8 +8,8 @@ import {
 
 export default function AuthLayout({ children }: React.PropsWithChildren) {
   return (
-    <div className="mx-auto flex h-screen w-full max-w-md flex-col justify-center gap-6 p-4">
-      <Card>
+    <div className="z-10 mx-auto flex h-screen w-full max-w-md flex-col justify-center gap-6 p-4">
+      <Card className="border-none shadow-lg backdrop-blur-sm">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome</CardTitle>
           <CardDescription>

@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import BackgroundPattern from '@/components/background-pattern'
 import ThemeProvider from '@/components/theme-provider'
 import StoreProvider from '@/lib/redux/provider'
 
@@ -22,14 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          disableTransitionOnChange
-          enableSystem
-        >
-          <StoreProvider>{children}</StoreProvider>
-        </ThemeProvider>
+        <BackgroundPattern />
+
+        <div className="relative z-10">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            disableTransitionOnChange
+            enableSystem
+          >
+            <StoreProvider>{children}</StoreProvider>
+          </ThemeProvider>
+        </div>
       </body>
     </html>
   )
