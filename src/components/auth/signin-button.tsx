@@ -7,12 +7,15 @@ type Provider = Extract<ProviderId, 'google' | 'github'>
 export function SignInButton({
   provider,
   callbackUrl,
+  size = 'md',
 }: {
   provider: Provider
   callbackUrl: string | undefined
+  size?: 'sm' | 'md'
 }) {
   return (
     <form
+      className="w-full"
       action={async () => {
         'use server'
         await signIn(provider, { redirectTo: callbackUrl ?? '' })
@@ -27,7 +30,7 @@ export function SignInButton({
                 fill="currentColor"
               />
             </svg>
-            Continue with Google
+            {size == 'md' && 'Continue with Google'}
           </>
         )}
 
@@ -39,7 +42,7 @@ export function SignInButton({
                 fill="currentColor"
               />
             </svg>
-            Continue with GitHub
+            {size == 'md' && 'Continue with GitHub'}
           </>
         )}
       </Button>

@@ -2,15 +2,10 @@
 
 import { addUserToDB, getUserByEmail } from '@/db/query'
 import { saltAndHashPassword } from '@/lib/auth-utils'
-import { signUpSchema } from '@/lib/schemas'
+import { type SignupInputs, signUpSchema } from '@/lib/schemas'
 
-export async function signup(formData: FormData) {
-  const parsedInputs = signUpSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    confirmPassword: formData.get('confirmPassword'),
-  })
+export async function signup(values: SignupInputs) {
+  const parsedInputs = signUpSchema.safeParse(values)
 
   if (!parsedInputs.success) {
     return {

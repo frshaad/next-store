@@ -1,38 +1,113 @@
 'use client'
 
-// import { signup } from '@/actions/signup-action'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { signup } from '@/actions/signup-action'
 import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  type SignupInputs,
+  signUpSchema,
+} from '@/lib/schemas'
 
 export default function SignupForm() {
+  const form = useForm<SignupInputs>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  async function onSubmit(values: SignupInputs) {
+    console.log(values)
+    await signup(values)
+  }
+
   return (
-    <form>
-      <div className="grid gap-6">
-        <div className="grid gap-3">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" placeholder="John Doe" required />
-        </div>
-        <div className="grid gap-3">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            placeholder="m@example.com"
-            type="email"
-            required
-          />
-        </div>
-        <div className="grid gap-3">
-          <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
-          </div>
-          <Input id="password" name="password" type="password" required />
-        </div>
+    <Form {...form}>
+      <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="John Doe" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="m@example.com" type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormDescription>
+                Must be {MIN_PASSWORD_LENGTH}-{MAX_PASSWORD_LENGTH} characters
+                long and include an uppercase letter, a lowercase letter, and a
+                number.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button className="w-full" type="submit">
-          Login
+          Sign up
         </Button>
-      </div>
-    </form>
+      </form>
+    </Form>
   )
 }

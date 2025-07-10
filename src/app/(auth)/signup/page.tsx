@@ -11,9 +11,9 @@ export default async function SignInPage({
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <SignInButton callbackUrl={callbackUrl} provider="google" />
-        <SignInButton callbackUrl={callbackUrl} provider="github" />
+      <div className="flex w-full gap-4">
+        <SignInButton callbackUrl={callbackUrl} provider="google" size="sm" />
+        <SignInButton callbackUrl={callbackUrl} provider="github" size="sm" />
       </div>
 
       <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

@@ -18,10 +18,6 @@ export default function AuthLayout({ children }: React.PropsWithChildren) {
         </CardHeader>
         <CardContent className="grid gap-6">{children}</CardContent>
       </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our Terms of Service and Privacy
-        Policy.
-      </div>
     </div>
   )
 }
