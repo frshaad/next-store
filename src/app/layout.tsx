@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import BackgroundPattern from '@/components/background-pattern'
 import ThemeProvider from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/sonner'
 import StoreProvider from '@/lib/redux/provider'
 
 export const metadata: Metadata = {
@@ -32,7 +33,10 @@ export default function RootLayout({
             disableTransitionOnChange
             enableSystem
           >
-            <StoreProvider>{children}</StoreProvider>
+            <StoreProvider>
+              {children}
+              <Toaster position="bottom-center" richColors />
+            </StoreProvider>
           </ThemeProvider>
         </div>
       </body>

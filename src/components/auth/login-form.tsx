@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { login } from '@/actions/signin-action'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,14 +31,20 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
+  const router = useRouter()
+
   async function onSubmit(values: SigninInputs) {
     setError(null)
 
     startTransition(async () => {
       const result = await login(values)
 
-      if (!result.success) {
+      if (result.success) {
+        toast.success('Successfuly logged in. redirecting...')
+        router.push('/')
+      } else {
         setError(result.error)
+        toast.error(result.error)
       }
     })
   }
@@ -83,7 +92,14 @@ export default function LoginForm() {
         ) : null}
 
         <Button className="w-full" disabled={isPending} type="submit">
-          {isPending ? 'Signing in…' : 'Login'}
+          {isPending ? (
+            <span className="flex items-center gap-2">
+              <LoaderCircle className="animate-spin" />
+              Signing in…
+            </span>
+          ) : (
+            'Sign in'
+          )}
         </Button>
       </form>
     </Form>
