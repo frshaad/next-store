@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { signup } from '@/actions/signup-action'
 import { Button } from '@/components/ui/button'
 import {
@@ -24,7 +26,11 @@ import {
 } from '@/lib/schemas'
 
 export default function SignupForm() {
+  const router = useRouter()
+
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm<SignupInputs>({
     resolver: zodResolver(signUpSchema),
@@ -37,8 +43,19 @@ export default function SignupForm() {
   })
 
   async function onSubmit(values: SignupInputs) {
-    console.log(values)
-    await signup(values)
+    setError(null)
+
+    startTransition(async () => {
+      const result = await signup(values)
+
+      if (result.success) {
+        toast.success('Successfuly signed up. welcome!')
+        router.push('/')
+      } else {
+        setError(result.error)
+        toast.error(result.error)
+      }
+    })
   }
 
   return (
@@ -51,7 +68,7 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <Input disabled={isPending} placeholder="John Doe" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.
@@ -68,7 +85,12 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" type="email" {...field} />
+                <Input
+                  disabled={isPending}
+                  placeholder="m@example.com"
+                  type="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,9 +105,15 @@ export default function SignupForm() {
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input type={showPassword ? 'text' : 'password'} {...field} />
+                  <Input
+                    className="pr-10"
+                    disabled={isPending}
+                    type={showPassword ? 'text' : 'password'}
+                    {...field}
+                  />
                   <Button
                     className="absolute top-1/2 right-0 -translate-y-1/2"
+                    tabIndex={-1}
                     type="button"
                     variant="ghost"
                     onClick={() => setShowPassword(c => !c)}
@@ -112,9 +140,15 @@ export default function SignupForm() {
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input type={showPassword ? 'text' : 'password'} {...field} />
+                  <Input
+                    className="pr-10"
+                    disabled={isPending}
+                    type={showPassword ? 'text' : 'password'}
+                    {...field}
+                  />
                   <Button
                     className="absolute top-1/2 right-0 -translate-y-1/2"
+                    tabIndex={-1}
                     type="button"
                     variant="ghost"
                     onClick={() => setShowPassword(c => !c)}
@@ -128,8 +162,21 @@ export default function SignupForm() {
           )}
         />
 
-        <Button className="w-full" type="submit">
-          Sign up
+        {!!error && (
+          <p aria-live="polite" className="text-destructive text-sm">
+            {error}
+          </p>
+        )}
+
+        <Button className="w-full" disabled={isPending} type="submit">
+          {isPending ? (
+            <span className="flex items-center gap-2">
+              <LoaderCircle className="animate-spin" />
+              Creating your account…
+            </span>
+          ) : (
+            'Create account'
+          )}
         </Button>
       </form>
     </Form>

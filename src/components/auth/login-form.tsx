@@ -88,6 +88,7 @@ export default function LoginForm() {
                   />
                   <Button
                     className="absolute top-1/2 right-0 -translate-y-1/2"
+                    tabIndex={-1}
                     type="button"
                     variant="ghost"
                     onClick={() => setShowPassword(c => !c)}
