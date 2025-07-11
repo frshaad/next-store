@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoaderCircle } from 'lucide-react'
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { login } from '@/actions/signin-action'
@@ -20,6 +20,12 @@ import { Input } from '@/components/ui/input'
 import { type SigninInputs, signInSchema } from '@/lib/schemas'
 
 export default function LoginForm() {
+  const router = useRouter()
+
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
   const form = useForm<SigninInputs>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -27,11 +33,6 @@ export default function LoginForm() {
       password: '',
     },
   })
-
-  const [error, setError] = useState<string | null>(null)
-  const [isPending, startTransition] = useTransition()
-
-  const router = useRouter()
 
   async function onSubmit(values: SigninInputs) {
     setError(null)
@@ -78,18 +79,33 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input disabled={isPending} type="password" {...field} />
+                <div className="relative">
+                  <Input
+                    className="pr-10"
+                    disabled={isPending}
+                    type={showPassword ? 'text' : 'password'}
+                    {...field}
+                  />
+                  <Button
+                    className="absolute top-1/2 right-0 -translate-y-1/2"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowPassword(c => !c)}
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {error ? (
+        {!!error && (
           <p aria-live="polite" className="text-destructive text-sm">
             {error}
           </p>
-        ) : null}
+        )}
 
         <Button className="w-full" disabled={isPending} type="submit">
           {isPending ? (

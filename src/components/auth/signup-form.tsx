@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Eye, EyeOff } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { signup } from '@/actions/signup-action'
 import { Button } from '@/components/ui/button'
@@ -22,6 +24,8 @@ import {
 } from '@/lib/schemas'
 
 export default function SignupForm() {
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+
   const form = useForm<SignupInputs>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -78,7 +82,17 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <div className="relative">
+                  <Input type={showPassword ? 'text' : 'password'} {...field} />
+                  <Button
+                    className="absolute top-1/2 right-0 -translate-y-1/2"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowPassword(c => !c)}
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </Button>
+                </div>
               </FormControl>
               <FormDescription>
                 Must be {MIN_PASSWORD_LENGTH}-{MAX_PASSWORD_LENGTH} characters
@@ -97,7 +111,17 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <div className="relative">
+                  <Input type={showPassword ? 'text' : 'password'} {...field} />
+                  <Button
+                    className="absolute top-1/2 right-0 -translate-y-1/2"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowPassword(c => !c)}
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
