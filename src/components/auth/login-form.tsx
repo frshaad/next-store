@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useTransition } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { login } from '@/actions/signin-action'
@@ -24,9 +25,19 @@ export default function LoginForm() {
     },
   })
 
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
   async function onSubmit(values: SigninInputs) {
-    console.log(values)
-    await login(values)
+    setError(null)
+
+    startTransition(async () => {
+      const result = await login(values)
+
+      if (!result.success) {
+        setError(result.error)
+      }
+    })
   }
 
   return (
@@ -39,7 +50,12 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" type="email" {...field} />
+                <Input
+                  disabled={isPending}
+                  placeholder="m@example.com"
+                  type="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -53,14 +69,21 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input disabled={isPending} type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit">
-          Login
+
+        {error ? (
+          <p aria-live="polite" className="text-destructive text-sm">
+            {error}
+          </p>
+        ) : null}
+
+        <Button className="w-full" disabled={isPending} type="submit">
+          {isPending ? 'Signing in…' : 'Login'}
         </Button>
       </form>
     </Form>

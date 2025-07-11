@@ -6,7 +6,7 @@ type Provider = Extract<ProviderId, 'google' | 'github'>
 
 export function SignInButton({
   provider,
-  callbackUrl,
+  callbackUrl = '/',
   size = 'md',
 }: {
   provider: Provider

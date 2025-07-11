@@ -1,19 +1,30 @@
 'use server'
 
 import { AuthError } from 'next-auth'
-import { redirect } from 'next/navigation'
 import { signIn } from '@/auth'
 import { type SigninInputs } from '@/lib/schemas'
 
-const SIGNIN_ERROR_URL = '/error'
-
-export async function login(values: SigninInputs) {
+export async function login(
+  values: SigninInputs,
+): Promise<{ success: true } | { success: false; error: string }> {
   try {
-    await signIn('credentials', values)
+    await signIn('credentials', { ...values, redirect: false })
+    return { success: true }
   } catch (error) {
     if (error instanceof AuthError) {
-      return redirect(`${SIGNIN_ERROR_URL}?error=${error.type}`)
+      switch (error.type) {
+        case 'CredentialsSignin': {
+          return { success: false, error: 'Invalid email or password.' }
+        }
+        default: {
+          return {
+            success: false,
+            error: 'Something went wrong. Please try again.',
+          }
+        }
+      }
     }
-    throw error
+
+    return { success: false, error: 'Unexpected error. Please try again.' }
   }
 }
