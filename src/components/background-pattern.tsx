@@ -1,7 +1,7 @@
 export default function BackgroundPattern() {
   return (
     <>
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.15] select-none">
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-10 select-none">
         <svg
           className="h-full w-full"
           height="100%"
@@ -66,11 +66,11 @@ export default function BackgroundPattern() {
       </div>
 
       {/* Floating shapes */}
-      <div className="bg-primary/10 absolute top-20 left-20 z-0 h-64 w-64 animate-pulse rounded-full blur-3xl" />
+      {/* <div className="bg-primary/10 absolute top-20 left-20 z-0 h-64 w-64 rounded-full blur-3xl" />
       <div
-        className="bg-primary/5 absolute right-20 bottom-20 z-0 h-80 w-80 animate-pulse rounded-full blur-3xl"
+        className="bg-primary/5 absolute right-20 bottom-20 z-0 h-80 w-80 rounded-full blur-3xl"
         style={{ animationDelay: '1s' }}
-      />
+      /> */}
     </>
   )
 }
