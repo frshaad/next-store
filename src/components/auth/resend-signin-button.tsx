@@ -3,10 +3,10 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
+import { LoaderCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { login } from '@/actions/signin-action'
+import { register } from '@/actions/register-action'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -17,28 +17,26 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { type SigninInputs, signInSchema } from '@/lib/schemas'
+import { type AuthInputs, authSchema } from '@/lib/schemas'
 
-export default function LoginForm() {
+export function SignInWithResend() {
   const router = useRouter()
 
-  const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const form = useForm<SigninInputs>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<AuthInputs>({
+    resolver: zodResolver(authSchema),
     defaultValues: {
       email: '',
-      password: '',
     },
   })
 
-  async function onSubmit(values: SigninInputs) {
+  async function onSubmit(values: AuthInputs) {
     setError(null)
 
     startTransition(async () => {
-      const result = await login(values)
+      const result = await register(values)
 
       if (result.success) {
         toast.success('Successfuly logged in. redirecting...')
@@ -49,10 +47,9 @@ export default function LoginForm() {
       }
     })
   }
-
   return (
     <Form {...form}>
-      <form className="space-y-7" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -72,36 +69,6 @@ export default function LoginForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    className="pr-10"
-                    disabled={isPending}
-                    type={showPassword ? 'text' : 'password'}
-                    {...field}
-                  />
-                  <Button
-                    className="absolute top-1/2 right-0 -translate-y-1/2"
-                    tabIndex={-1}
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setShowPassword(c => !c)}
-                  >
-                    {showPassword ? <EyeOff /> : <Eye />}
-                  </Button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         {!!error && (
           <p aria-live="polite" className="text-destructive text-sm">
             {error}
@@ -112,10 +79,10 @@ export default function LoginForm() {
           {isPending ? (
             <span className="flex items-center gap-2">
               <LoaderCircle className="animate-spin" />
-              Signing in…
+              Please wait…
             </span>
           ) : (
-            'Sign in'
+            'Continue with email'
           )}
         </Button>
       </form>

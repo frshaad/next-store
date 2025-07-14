@@ -1,6 +1,5 @@
-import Link from 'next/link'
+import { SignInWithResend } from '@/components/auth/resend-signin-button'
 import { SignInButton } from '@/components/auth/signin-button'
-import SignupForm from '@/components/auth/signup-form'
 
 export default async function SignInPage({
   searchParams,
@@ -11,9 +10,9 @@ export default async function SignInPage({
 
   return (
     <>
-      <div className="flex w-full gap-4">
-        <SignInButton callbackUrl={callbackUrl} provider="google" size="sm" />
-        <SignInButton callbackUrl={callbackUrl} provider="github" size="sm" />
+      <div className="flex flex-col gap-4">
+        <SignInButton callbackUrl={callbackUrl} provider="google" />
+        <SignInButton callbackUrl={callbackUrl} provider="github" />
       </div>
 
       <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -22,14 +21,7 @@ export default async function SignInPage({
         </span>
       </div>
 
-      <SignupForm />
-
-      <div className="text-center text-sm">
-        Already have an account?{' '}
-        <Link className="underline underline-offset-4" href="/signin">
-          Sign in
-        </Link>
-      </div>
+      <SignInWithResend />
     </>
   )
 }
