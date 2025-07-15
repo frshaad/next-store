@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="bg-background flex min-h-[50vh] items-center justify-center">
+    <div className="w-ful flex h-screen items-center justify-center">
       <div className="relative">
         {/* Outer circle */}
         <div className="border-border h-12 w-12 rounded-full border-2" />
