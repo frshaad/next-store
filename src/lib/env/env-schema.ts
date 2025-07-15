@@ -7,6 +7,7 @@ export const environmentSchema = z.object({
   AUTH_GITHUB_ID: z.string(),
   AUTH_GITHUB_SECRET: z.string(),
   DATABASE_URL: z.string(),
+  AUTH_RESEND_KEY: z.string(),
 })
 
 export type Environment = z.infer<typeof environmentSchema>
