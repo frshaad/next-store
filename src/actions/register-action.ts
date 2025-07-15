@@ -10,12 +10,11 @@ export async function register(
     const parsedInputs = authSchema.safeParse(values)
 
     if (!parsedInputs.success) {
-      const emailError = parsedInputs.error.flatten().fieldErrors.email
+      const error = parsedInputs.error.issues[0].message
 
       return {
         success: false,
-        // @FIX select email error with valid type
-        error: 'Email error',
+        error,
       }
     }
 
