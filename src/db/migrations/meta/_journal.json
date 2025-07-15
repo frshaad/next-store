@@ -15,6 +15,13 @@
       "when": 1752149376223,
       "tag": "0001_goofy_madame_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752574091283,
+      "tag": "0002_easy_black_crow",
+      "breakpoints": true
     }
   ]
 }
