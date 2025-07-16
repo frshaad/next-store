@@ -7,5 +7,9 @@ export default async function SignInPage({
 }) {
   const { callbackUrl } = await searchParams
 
-  return <RegisterForm callbackUrl={callbackUrl} />
+  return (
+    <div className="z-10 mx-auto flex h-screen w-full max-w-md flex-col justify-center gap-6 p-4">
+      <RegisterForm callbackUrl={callbackUrl} />
+    </div>
+  )
 }
