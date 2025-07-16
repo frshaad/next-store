@@ -17,26 +17,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     authorized: ({ auth, request: { nextUrl } }) => {
       const isLoggedIn = !!auth?.user
+
       const isProtectedRoute = PROTECTED_ROUTES.some(route =>
         nextUrl.pathname.startsWith(route),
       )
+
+      if (isProtectedRoute) {
+        return isLoggedIn ? true : false
+      }
 
       const isAuthRoute = AUTH_ROUTES.some(route =>
         nextUrl.pathname.startsWith(route),
       )
 
-      if (isProtectedRoute) {
-        if (isLoggedIn) {
-          return true
-        }
-        return false
-      }
-
       if (isAuthRoute) {
-        if (isLoggedIn) {
-          return Response.redirect(new URL('/', nextUrl))
-        }
-        return true
+        return isLoggedIn ? Response.redirect(new URL('/', nextUrl)) : true
       }
 
       return true
