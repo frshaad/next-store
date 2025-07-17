@@ -7,8 +7,9 @@ import { Toaster } from '@/components/ui/sonner'
 import StoreProvider from '@/lib/redux/provider'
 
 export const metadata: Metadata = {
-  description: 'A basic starter for Next.js',
-  title: 'Next.js Starter App',
+  description:
+    "The front page of tech. Discover, discuss, and share what's new and interesting in the world of technology.",
+  title: 'NodeLink',
 }
 
 const inter = Inter({

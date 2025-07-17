@@ -1,8 +1,8 @@
 {
-  "name": "next-store",
+  "name": "node-link",
   "version": "1.0.0",
   "private": true,
-  "description": "A professional Next.js starter template with TypeScript, Tailwind CSS, and more",
+  "description": "A professional Next.js clone of HackerNews with TypeScript, Tailwind CSS, and more",
   "license": "MIT",
   "scripts": {
     "dev": "next dev --turbopack",
