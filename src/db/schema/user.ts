@@ -6,6 +6,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('user', {
@@ -13,9 +14,13 @@ export const users = pgTable('user', {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text('name'),
+  username: varchar('username', { length: 256 }).unique(),
   email: text('email').unique(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 })
 
 export const accounts = pgTable(
