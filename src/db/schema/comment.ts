@@ -1,8 +1,10 @@
+import { relations } from 'drizzle-orm'
 import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
 import { posts } from './post'
+import { commentUpvotes } from './upvote'
 import { users } from './user'
 
-export const comments = pgTable('comments', {
+const comments = pgTable('comments', {
   id: serial().primaryKey(),
   userId: text()
     .notNull()
@@ -18,3 +20,25 @@ export const comments = pgTable('comments', {
   createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
 })
+
+const commentRelations = relations(comments, ({ one, many }) => ({
+  author: one(users, {
+    fields: [comments.userId],
+    references: [users.id],
+  }),
+  parentComment: one(comments, {
+    fields: [comments.parentCommentId],
+    references: [comments.id],
+    relationName: 'childComments',
+  }),
+  childComments: many(comments, {
+    relationName: 'childComments',
+  }),
+  post: one(posts, {
+    fields: [comments.postId],
+    references: [posts.id],
+  }),
+  commentUpvotes: many(commentUpvotes),
+}))
+
+export { comments, commentRelations }
