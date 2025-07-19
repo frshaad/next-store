@@ -1,4 +1,5 @@
 import type { AdapterAccountType } from 'next-auth/adapters'
+import { relations } from 'drizzle-orm'
 import {
   boolean,
   integer,
@@ -8,6 +9,9 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core'
+import { comments } from './comment'
+import { posts } from './post'
+import { commentUpvotes, postUpvotes } from './upvote'
 
 export const users = pgTable('user', {
   id: text('id')
@@ -22,6 +26,13 @@ export const users = pgTable('user', {
     .defaultNow()
     .notNull(),
 })
+
+export const userRelations = relations(users, ({ many }) => ({
+  posts: many(posts),
+  comments: many(comments),
+  postUpvotes: many(postUpvotes),
+  commentUpvotes: many(commentUpvotes),
+}))
 
 export const accounts = pgTable(
   'account',
